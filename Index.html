@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Intro à Vue.js 2</title>
+</head>
+<body>
+<div id="app">
+    <p>Nombre de produit : {{nombreProduit}}</p>
+    <p>Nombre de produit en stock: {{nombreProduitEnStock}}</p>
+    <ul>
+        <li v-for="pro in products">{{pro.title}} : {{pro.category}}  ({{pro.stock}}) are in stocks
+            <span v-if="pro.stock <= 50 "><strong>Stock faible !!!</strong></span>
+            <button @click="pro.stock += 1">+</button>
+            <input type="number" v-model.number="pro.stock">
+            <button @click="pro.stock -= 1">-</button>
+        </li>
+    </ul>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.js"></script>
+<script>
+    const app = new Vue({
+        el: '#app',
+        data: {
+            products: [
+                'Boots',
+                'banana',
+                'chocolate'
+                ]
+        },
+         computed: {
+           nombreProduitEnStock () {
+               return this.products.reduce((sum, pro) => sum + pro.stock, 0);
+           },
+            nombreProduit () {
+                return this.products.length;
+           }
+        },
+        created () {
+            fetch('https://dummyjson.com/products')
+                .then(res => res.json())
+                .then(data => {
+                    this.products = data.products;
+                });
+
+        }
+    });
+</script>
+</body>
+</html>
